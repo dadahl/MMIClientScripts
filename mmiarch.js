@@ -1,10 +1,25 @@
-/*Copyright (C) 2015 Deborah A. Dahl, MIT license
+/*Copyright (C) 2013 Deborah A. Dahl
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy of 
+ this software and associated documentation files (the "Software"), to deal in 
+ the Software without restriction, including without limitation the rights to use, 
+ copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the 
+ Software, and to permit persons to whom the Software is furnished to do so, 
+ subject to the following conditions:
+ The above copyright notice and this permission notice shall be included in all copies or 
+ substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS 
+ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-var contextIDPrefix = "nlClient"; //use a prefix of your choice here for the contextID
+var contextIDPrefix = "nlClient"; //use a prefix of your choice here
 var contextIDNumber = 0;
 var contextID;
 var source = "ctNLClient"; //this should be an identifier for the client
-var target = "ctNLServer"; //this should be an identifier for a server-based Modality Component
+var target = "ctNLServer"; //this should be an identifier for for a server-based Modality Component
 var requestIDPrefix = "requestID";
 var requestIDNumber = 0;
 var requestID;
@@ -18,7 +33,7 @@ var incomingStatusInfo;
 var outGoingDataNode;
 var outGoingEventDoc;
 var currentEmma;
-var witAccessToken = "Bearer <your token>";
+var witAccessToken = "Bearer EJ4R675O6VLYLK3EAGMKARKUVHPYSYUL";
 
 //MMIEvent object
 function createEvent(name, input, functionName) {
@@ -42,7 +57,7 @@ function createEvent(name, input, functionName) {
                 functionNode.appendChild(functionNameNode);
                 outGoingDataNode = outGoingEventDoc.createElementNS(mmiNamespace, "mmi:Data");
                 outGoingDataNode.appendChild(functionNode);
-                if (application === "customUnderstanding") { //todo, move to app.js
+                if (application === "customUnderstanding" || application === "lightControl" || application === "audioBooks") { //todo, move to app.js
                     var idNode = outGoingEventDoc.createElement("witAccessToken");
                     var elementExists = document.getElementById("textID");
                     var idValueNode;
@@ -206,7 +221,7 @@ function getEmma(documentElement) {
     }
 }
 
-//utility for displaying XML
+//for displaying XML
 function escapeXML(string) {
     var start = "<pre>";
     var end = "</pre";

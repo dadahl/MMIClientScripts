@@ -8,8 +8,11 @@ var counter = 0;
 var maxTries = 6;
 var gotResults = false;
 var cloud = true;
-var localURL = ""; //a URL for local debugging
-var cloudURL = ""; // a URL for accessing the server
+//var localURL = "/ct.naturallanguage/rest/processmessage";
+var localURL = "/proloquia-nlservice.rhcloud/rest/processmessage";
+var cloudURL = "/rest/processmessage";
+var inputNBest;
+
 function checkServer() {
     if (document.location.hostname === "localhost") {
         cloud = false;
@@ -84,7 +87,7 @@ function receiveResponse() {
                         var finalPretty = vkbeautify.xml(escapedResult);
                         xmlWindow.document.write(finalPretty);
                     }
-                    if(application === "customClassification"){
+                    if (application === "customClassification") {
                         enableSendRequest();
                     }
                     var toDisplay = "";
@@ -114,10 +117,10 @@ function addMessageGet()
 {
     getXmlHttpRequest();
     if (cloud === false) {
-        xmlHttp.open("GET", localURL+"?requestID=" + requestID, true);
+        xmlHttp.open("GET", localURL + "?requestID=" + requestID, true);
     }
     else {
-        xmlHttp.open("GET", cloudURL+"?requestID=" + requestID, true); //amazon
+        xmlHttp.open("GET", cloudURL + "?requestID=" + requestID, true); //amazon
     }
     xmlHttp.setRequestHeader("Content-Type", "text/xml");
     xmlHttp.send();
@@ -152,8 +155,25 @@ function addMessagePost()
     }
 }
 
+function addMessagePostAudioControl(input)
+//send actual data to the server
+{
+    counter = 0;
+    currentEmma = null; //remove previous EMMA
+    getXmlHttpRequest();
+    var mmiEvent = createEvent("StartRequest", input, application);
+    if (cloud === false) {
+        xmlHttp.open("POST", localURL, true);
+    }
+    else {
+        xmlHttp.open("POST", cloudURL, true); //cloud server
+    }
+    xmlHttp.setRequestHeader("Content-Type", "text/xml");
+    xmlHttp.send(mmiEvent);
 
-function sendTrainingDataToServer() { //for PrepareRequest
+}
+
+function sendTrainingDataToServer() {
     counter = 0;
     getXmlHttpRequest();
     input = document.getElementById("trainingData").value;

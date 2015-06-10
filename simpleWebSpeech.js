@@ -4,9 +4,12 @@ var startTime;
 var endTime;
 var recognizer;
 var speechEngineName = "Web Speech API";
-var finalTranscript ='';
+var finalTranscript = '';
 var finalTranscriptList;
 var numNBest = 0;
+var language = "en-US";
+var maxNbest = 1;
+
 
 // Test browser support
 function initializeReco() {
@@ -30,46 +33,53 @@ function initializeReco() {
         interim_span.innerHTML = '';
         transcription = document.getElementById('messageTextPost');
         // result event handler
-        recognizer.onresult = function(event) {
+        recognizer.onresult = function (event) {
             var interim_transcript = '';
             final_span.innerHTML = '';
             final_transcript = '';
-            numNBest = event.results.length;
-            if(numNBest > 1){
-                finalTranscriptList = event.results;
-            }
-            for (var i = event.resultIndex; i < event.results.length; i++) {
-                if (event.results[i].isFinal) {
-                    final_transcript = event.results[i][0].transcript;
-                    //transcription.textContent = event.results[i][0].transcript;
-                    transcription.value = event.results[i][0].transcript;
-                    haveRecoResult = true;
-                    currentConfidence = event.results[i][0].confidence;
-                    // extract emma if current recognizer supports emma
-                    // currentEmma = event.results[i][0].emma;
-                    addMessagePost();
-                    haveRecoResult = false;
-                    turnOffRecognition();
-                } else {
-                    interim_transcript = event.results[i][0].transcript;
-                    //transcription.textContent += event.results[i][0].transcript;
+            var speechResults = event.results[0];
+            numNBest = speechResults.length;
+            if (speechResults.isFinal) {
+                if (numNBest > 1) {
+                    finalTranscriptList = speechResults;
                 }
+                finalTranscript = speechResults[0].transcript;
+                transcription.value = finalTranscript;
+                haveRecoResult = true;
+                currentConfidence = speechResults[0].confidence;
+                if (numNBest === 1) {
+                    emmaNode = wrapEmma(finalTranscript, language);
+                }
+                else {
+                    emmaNode = wrapEmmaList(finalTranscriptList, language);
+                }
+                haveRecoResult = false;
+                turnOffRecognition();
+                emmaString = getStringEmma(emmaNode);
+                currentEmma = emmaNode;
+                if (showXMLResult) {
+                    showEmma(emmaString);
+                }
+                var toDisplay = "";
+                toDisplay = displayResults();
+                document.getElementById("output").innerHTML = toDisplay;
+                final_span.innerHTML = final_transcript;
             }
-            final_span.innerHTML = final_transcript;
+            interim_transcript = speechResults[0].transcript;
             interim_span.innerHTML = interim_transcript;
-            result.innerHTML = getStringEmmma(emmaNode);
-        };
-        recognizer.onspeechstart = function() {
+        }
+        ;
+        recognizer.onspeechstart = function () {
             transcription.textContent = "";
             var d = new Date();
             startTime = d.getTime();
         };
-        recognizer.onspeechend = function() {
+        recognizer.onspeechend = function () {
             var d = new Date();
             endTime = d.getTime();
         };
         // Listen for errors
-        recognizer.onerror = function(event) {
+        recognizer.onerror = function (event) {
             haveRecoResult = false;
             events.innerHTML = events.innerHTML + String.fromCharCode(13) + 'Recognition error: ' + event.error;
             turnOffRecognition();
@@ -85,15 +95,22 @@ function turnOffRecognition() {
 
 function turnOnRecognition() {
     try {
-        if(document.getElementById("setLanguage") !== null){
-            recognizer.lang = setLanguage.value;
+        if (document.getElementById("selectLanguage") !== null) {
+            recognizer.lang = selectLanguage.value;
+            language = recognizer.lang;
         }
+        maxNbest = document.getElementById("maxNbest");
+        recognizer.maxAlternatives = maxNbest.value;
         recognizer.start();
         document.getElementById("mic").style.display = "inline";
         events.innerHTML = events.innerHTML + String.fromCharCode(13) + 'Recognition started';
     } catch (ex) {
         events.innerHTML = events.innerHTML + String.fromCharCode(13) + 'Recognition error: ' + event.error;
     }
+}
+function showEmma(emma) {
+    xmlWindow = window.open("", "", "width=450,height=550");
+    xmlWindow.document.write(emma);
 }
 
 
