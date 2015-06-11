@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Conversational Technologies Natural Language Service</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" charset="utf-8" src="scripts/emma.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/mmiarch.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/app.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/communication.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/UI.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/vkbeautify.0.99.00.beta.js"></script>
+        <script type="text/javascript" charset="utf-8" src="scripts/simpleWebSpeech.js"></script>
+        <script type="text/javascript">
+            var application = "speechDemo";
+        </script>
+        <link href="css/ct.css" rel="stylesheet" type="text/css">
+    </head>
+    <body class="ctBody" onload="checkServer();
+            generateNewContextID();
+            initializeReco();" onunload="sendClearContext();">
+        <header class="ctHeader">
+            <h1 class="ct"><a href="http://www.conversational-technologies.com">Conversational Technologies</a></h1>
+            <h1 class="appTitle">Speech Recognition Demo</h1>
+            <a href="http://www.w3.org/"><img src="images/w3c_home.png" width="72" height="48" alt="w3c logo" /></a>
+            with W3C Multimodal Standards
+        </header>
+        <h2>Speech Recognition</h2>
+        <hr>
+        <table class="ctTable" width="100%" border="0" cellpadding="6">
+            <tr>
+                <td colspan="2"><br/>
+                    This demo uses the Web Speech API and creates EMMA documents from the results. You will need to use the Chrome browser.<br/>
+                    <label for="selectLanguage"><strong>Language</strong></label>
+                    <select id="selectLanguage">
+                        <option value="en-US">English</option>
+                        <option value="cmn-Hans">Chinese</option>
+                        <option value="fr-FR">French</option>
+                        <option value="de-DE">German</option>
+                        <option value="it-IT">Italian</option>
+                        <option value="ja-JP">Japanese</option>
+                         <option value="pt-PT">Portuguese</option>
+                        <option value="es-MX">Spanish</option>
+                    </select>
+                    <label for="maxNbest"> <br/>
+                        <strong>Number of speech recognition results to return</strong></label>
+                    <input type="text" size="4" value="1" id="maxNbest"/>
+                    <br/>
+                    <button type="button" class="ctButton" id="startReco" name="startReco" onclick="turnOnRecognition()">Start Recognition</button>
+                    <button type="button" class="ctButton" id="stopReco" name="stopReco" onclick="turnOffRecognition()">Stop Recognition</button>
+                    <img src="images/mikeLargeRed.png" id="mic" width="72" height="76" alt="microphone" style="display: none;"/>  
+                </td> 
+            </tr> 
+            <tr>
+                <td width="76%"><form name="analyzePost">
+                        Speech recognition results: <div id="results">
+                            <span class="final" id="final_span"></span> 
+                            <span class="interim" id="interim_span"></span>
+                        </div>
+                        <textarea name="messageTextPost" rows="10" wrap="soft" class="ctTextDisplay" id="messageTextPost"></textarea>
+                        <br/>
+                        <button type="button" class="ctButton" id="showXML" name="showXML" onclick="toggleShowXMLResult();">Show MMI Event result</button>
+                        <button type="button" class="ctButton" id="clearText" name="clearText" onclick="clearInput();">Clear Input</button><br/>
+                    </form></td>
+                <td width="24%">
+                    <form name="eventLog">
+                        Event Log
+                        <textarea rows="10" wrap="soft" class="ctTextDisplay" id="events"></textarea>
+                        <button type="button" class="ctButton" name="post" onclick="clearEventLog();">Clear Events</button>
+                    </form></td>
+            </tr>
+        </table>
+        <hr>
+        <h3>Result</h3>
+        <table class="ctTable" width="100%">
+            <tr>
+                <td>
+                    <textarea class="ctTextDisplay" id="output" rows="10"></textarea>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
